@@ -1,0 +1,79 @@
+# ======================
+# Python / Virtualenv
+# ======================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+venv
+# ======================
+# Django
+# ======================
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# Local settings (never commit secrets)
+local_settings.py
+.env
+/api/settings.py
+
+# ======================
+# Test / Coverage / Type Checking
+# ======================
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# ======================
+# Build / Packaging
+# ======================
+build/
+dist/
+*.egg-info/
+*.egg
+wheels/
+*.manifest
+*.spec
+.installed.cfg
+
+# ======================
+# IDE / Editor configs
+# ======================
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# ======================
+# Misc / Temp
+# ======================
+*.bak
+.history
+
+# === MIGRATIONS ===
+*/migrations/__pycache__/
+*/migrations/*.pyc
+# Keep migration files but ignore cache
+# If you want to ignore all migrations (NOT recommended), uncomment:
+# */migrations/

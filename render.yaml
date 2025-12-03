@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: syke-django-api
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn api.wsgi:application --timeout 120 --log-level debug"
+    runtime: python3
+    region: oregon
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: api.settings
+      - key: PYTHON_VERSION
+        value: 3.11.9
