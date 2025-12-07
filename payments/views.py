@@ -86,6 +86,7 @@ class PesapalInitView(APIView):
             user_id = request.data.get("user_id")
 
             if not booking_id or not amount or not user_id:
+                print('missing fields')
                 return Response({"error": "Missing required fields"}, status=400)
 
             # 1. Get Pesapal access token
@@ -97,7 +98,15 @@ class PesapalInitView(APIView):
 
             token_res = requests.post(token_url, json=token_payload)
             token_data = token_res.json()
-            access_token = token_data["token"]
+            print("PESAPAL TOKEN RESPONSE:", token_data)
+
+            access_token = token_data.get("token")
+            if not access_token:
+                return Response({
+                    "error": "Failed to get Pesapal token",
+                    "details": token_data
+                }, status=500)
+
 
             # 2. Register order
             order_url = "https://pay.pesapal.com/v3/api/Transactions/SubmitOrderRequest"
@@ -107,7 +116,6 @@ class PesapalInitView(APIView):
                 "amount": amount,
                 "description": "Room Booking Payment",
                 "callback_url": settings.PESAPAL_CALLBACK_URL,
-                "notification_id": settings.PESAPAL_NOTIFICATION_ID,
                 "billing_address": {
                     "email_address": request.user.email if request.user.is_authenticated else "",
                     "phone_number": "",
@@ -139,6 +147,7 @@ class PesapalInitView(APIView):
             }, status=200)
 
         except Exception as e:
+            print('EXCEPTION IN PESAPAL',e)
             return Response({"error": str(e)}, status=500)
 
 class PesapalCallbackView(APIView):

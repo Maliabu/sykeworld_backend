@@ -22,6 +22,7 @@ class RoomServices:
             result.append({
                 "id": svc.id,
                 "name": svc.name,
+                "description": svc.description,
                 "icon": f"{settings.BASE_URL}{svc.icon.url}"  # optional
             })
         return result
@@ -58,8 +59,9 @@ class RoomServices:
         result = []
 
         for room in rooms:
-            services = list(room.room_type.room_service.values("id", "name", "icon"))
+            services = list(room.room_type.room_service.values("id", "name", "icon", "description"))
             images_qs = RoomImage.objects.filter(room=room).values("id", "image", "caption")
+            
 
             # Only update image field to full URL
             images = []

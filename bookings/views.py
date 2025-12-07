@@ -157,18 +157,20 @@ class CreateBookingView(APIView):
         nights = ( ( __import__("datetime").datetime.fromisoformat(check_out) - __import__("datetime").datetime.fromisoformat(check_in) ).days )
         amount = Decimal(room.room_type.base_price) * max(1, nights)
 
-        booking = Booking.objects.create(
-            user=request.user,
-            room=room,
-            check_in=check_in,
-            check_out=check_out,
-            guests=guests,
-            special_requests=data.get("specialRequests",""),
-            total_price=amount
-        )
         if data.get("paymentMethod"):
+            print(data.get("paymentMethod"))
             try:
-                init_url = f"{settings.API_BASE_URL}/api/payments/pesapal/init/"
+                init_url = f"{settings.API_BASE_URL}/api/payments/init/"
+                
+                booking = Booking.objects.create(
+                        user=request.user,
+                        room=room,
+                        check_in=check_in,
+                        check_out=check_out,
+                        guests=guests,
+                        special_requests=data.get("specialRequests",""),
+                        total_price=amount
+                    )
 
                 # Call your PesapalInitView
                 pesapal_res = requests.post(init_url, json={
@@ -190,15 +192,16 @@ class CreateBookingView(APIView):
                 else:
                     return Response({
                         "message": "Booking created",
-                        "booking_id": booking.id,
+                        "rom": room.id,
                         "amount": str(amount),
                         "warning": "Pesapal failed, complete payment manually."
                     }, status=201)
 
             except Exception as e:
+                print(e)
                 return Response({
                     "message": "Booking created",
-                    "booking_id": booking.id,
+                    "room": room.id,
                     "amount": str(amount),
                     "error": str(e)
                 }, status=201)
@@ -206,7 +209,7 @@ class CreateBookingView(APIView):
         # default return (no payment method)
         return Response({
             "message": "Booking created",
-            "booking_id": booking.id,
+            "room": room.id,
             "amount": str(amount),
         }, status=201)
 
